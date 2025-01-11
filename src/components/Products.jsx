@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
 
@@ -7,12 +7,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Zoom } from "react-awesome-reveal";
 
 const Products = () => {
   const [data, setData] = useState([]);
-  const [filter, setFilter] = useState(data);
+  const [filter, setFilter] = useState([]);
   const [loading, setLoading] = useState(false);
-  let componentMounted = true;
+  const componentMounted = useRef(true);
 
   const dispatch = useDispatch();
 
@@ -24,18 +25,19 @@ const Products = () => {
     const getProducts = async () => {
       setLoading(true);
       const response = await fetch("https://fakestoreapi.com/products/");
-      if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
+      if (componentMounted.current) {
+        const fetchedData = await response.clone().json();
+        setData(fetchedData);
+        setFilter(fetchedData);
         setLoading(false);
       }
-
-      return () => {
-        componentMounted = false;
-      };
     };
 
     getProducts();
+
+    return () => {
+      componentMounted.current = false;
+    };
   }, []);
 
   const Loading = () => {
@@ -43,24 +45,6 @@ const Products = () => {
       <>
         <div className="col-12 py-5 text-center">
           <Skeleton height={40} width={560} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
-        </div>
-        <div className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4">
-          <Skeleton height={592} />
         </div>
       </>
     );
@@ -74,97 +58,109 @@ const Products = () => {
   const ShowProducts = () => {
     return (
       <>
-        <div className="buttons text-center py-5">
+        <div style={styles.filterContainer}>
           <button
-            className="btn btn-outline-dark btn-sm m-2"
+            className="btn btn-outline-dark"
             onClick={() => setFilter(data)}
+            style={styles.filterButton}
           >
             All
           </button>
           <button
-            className="btn btn-outline-dark btn-sm m-2"
+            className="btn btn-outline-dark"
             onClick={() => filterProduct("men's clothing")}
+            style={styles.filterButton}
           >
             Men's Clothing
           </button>
           <button
-            className="btn btn-outline-dark btn-sm m-2"
+            className="btn btn-outline-dark"
             onClick={() => filterProduct("women's clothing")}
+            style={styles.filterButton}
           >
             Women's Clothing
           </button>
           <button
-            className="btn btn-outline-dark btn-sm m-2"
+            className="btn btn-outline-dark"
             onClick={() => filterProduct("jewelery")}
+            style={styles.filterButton}
           >
             Jewelery
           </button>
           <button
-            className="btn btn-outline-dark btn-sm m-2"
+            className="btn btn-outline-dark"
             onClick={() => filterProduct("electronics")}
+            style={styles.filterButton}
           >
             Electronics
           </button>
         </div>
 
-        {filter.map((product) => {
-          return (
-            <div
-              id={product.id}
-              key={product.id}
-              className="col-md-4 col-sm-6 col-xs-8 col-12 mb-4"
-            >
-              <div className="card text-center h-100" key={product.id}>
-                <img
-                  className="card-img-top p-3"
-                  src={product.image}
-                  alt="Card"
-                  height={300}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">
-                    {product.title.substring(0, 12)}...
+        <div style={styles.productContainer}>
+          {filter.map((product) => {
+            return (
+              <Zoom key={product.id}>
+                <div
+                  style={styles.productCard}
+                  className="product-card"
+                  onMouseEnter={(e) =>
+                    e.currentTarget.classList.add("hover-effect")
+                  }
+                  onMouseLeave={(e) =>
+                    e.currentTarget.classList.remove("hover-effect")
+                  }
+                >
+                  <img
+                    src={product.image}
+                    alt="Card"
+                    style={styles.productImage}
+                  />
+                  <h5
+                    className="card-title text-truncate"
+                    style={styles.title}
+                    title={product.title}
+                  >
+                    {product.title}
                   </h5>
-                  <p className="card-text">
-                    {product.description.substring(0, 90)}...
+                  <p className="text-muted" style={styles.description}>
+                    {product.description.substring(0, 50)}...
                   </p>
+                  <h6 style={styles.price}>$ {product.price}</h6>
+                  <div>
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="btn btn-dark"
+                      style={styles.actionButton}
+                    >
+                      Buy Now
+                    </Link>
+                    <button
+                      className="btn btn-dark"
+                      style={styles.actionButton}
+                      onClick={() => {
+                        toast.success("Added to cart");
+                        addProduct(product);
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
-                <ul className="list-group list-group-flush">
-                  <li className="list-group-item lead">$ {product.price}</li>
-                  {/* <li className="list-group-item">Dapibus ac facilisis in</li>
-                    <li className="list-group-item">Vestibulum at eros</li> */}
-                </ul>
-                <div className="card-body">
-                  <Link
-                    to={"/product/" + product.id}
-                    className="btn btn-dark m-1"
-                  >
-                    Buy Now
-                  </Link>
-                  <button
-                    className="btn btn-dark m-1"
-                    onClick={() => {
-                      toast.success("Added to cart");
-                      addProduct(product);
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+              </Zoom>
+            );
+          })}
+        </div>
       </>
     );
   };
+
   return (
     <>
       <div className="container my-3 py-3">
         <div className="row">
           <div className="col-12">
             <h2 className="display-5 text-center">Latest Products</h2>
-            <hr />
+            <hr className="w-25 mx-auto" />
           </div>
         </div>
         <div className="row justify-content-center">
@@ -173,6 +169,65 @@ const Products = () => {
       </div>
     </>
   );
+};
+
+const styles = {
+  filterContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "20px",
+  },
+  filterButton: {
+    borderRadius: "20px",
+    fontSize: "14px",
+    fontWeight: "bold",
+  },
+  productContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+    justifyContent: "center",
+  },
+  productCard: {
+    width: "250px",
+    height: "400px", // Fixed height
+    padding: "15px",
+    border: "1px solid #ddd",
+    borderRadius: "10px",
+    textAlign: "center",
+    transition: "transform 0.3s, box-shadow 0.3s",
+    backgroundColor: "#fff",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  },
+  productImage: {
+    width: "100%", // Ensures the image fits the width of the box
+    height: "200px", // Fixed height
+    objectFit: "contain", // Ensures the image scales properly within the box
+    marginBottom: "10px",
+  },
+
+  title: {
+    fontSize: "16px",
+    fontWeight: "bold",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  description: {
+    fontSize: "12px",
+    color: "#666",
+  },
+  price: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    margin: "10px 0",
+  },
+  actionButton: {
+    margin: "5px",
+    fontSize: "14px",
+  },
+  
 };
 
 export default Products;

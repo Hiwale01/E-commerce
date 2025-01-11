@@ -1,0 +1,107 @@
+.contact-page {
+    background: linear-gradient(135deg, rgba(34, 34, 34, 0.85), rgba(22, 22, 22, 0.85)); /* Slightly darker gradient */
+    color: white;
+    padding: 40px 0; /* Extra padding for better spacing */
+}
+
+.contact-page h1 {
+    color: #00ADB5; /* Teal color for the heading */
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.contact-page hr {
+    border-color: #00ADB5; /* Teal color for the horizontal line */
+    margin-bottom: 40px;
+}
+
+.form-control {
+    background-color: #444; /* Darker background for input fields */
+    color: white; /* Light text inside inputs */
+    border: 1px solid #555; /* Slight border to differentiate inputs */
+    border-radius: 5px; /* Rounded corners for inputs */
+    padding: 12px 15px;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    background-color: #555; /* Slightly darker background on focus */
+    border-color: #00ADB5; /* Teal border on focus */
+    box-shadow: 0 0 5px rgba(0, 173, 181, 0.7); /* Soft glowing effect */
+}
+
+textarea.form-control {
+    resize: vertical; /* Allow textarea to resize vertically */
+    min-height: 150px; /* Minimum height for the textarea */
+}
+
+button {
+    background-color: #00ADB5; /* Teal button color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded corners for the button */
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #00CFD1; /* Lighter teal on hover */
+}
+
+button:disabled {
+    background-color: #888; /* Disabled button color */
+    cursor: not-allowed;
+}
+
+.text-center {
+    margin-top: 20px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.col-md-4, .col-lg-4, .col-sm-8 {
+    max-width: 600px;
+    width: 100%;
+}
+
+form {
+    background-color: rgba(34, 34, 34, 0.8); /* Slightly transparent dark background for the form */
+    padding: 30px;
+    border-radius: 8px; /* Rounded corners for the form container */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8); /* Add subtle shadow */
+}
+
+label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+hr {
+    border-top: 2px solid #00ADB5; /* Teal color for the separator */
+}
+
+footer {
+    background-color: #222831; /* Darker footer background */
+    padding: 20px 0;
+    text-align: center;
+    color: #EEEEEE;
+    margin-top: 40px;
+}
+
+footer a {
+    color: #00ADB5; /* Teal links */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #EEEEEE; /* Lighten link color on hover */
+}
